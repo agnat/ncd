@@ -1,0 +1,14 @@
+{
+  "name": "ncd",
+  "version": "1.0.0",
+  "description": "not central dispatch.",
+  "main": "gyp.js",
+  "scripts": {
+    "test": "tap tests/*.js"
+  },
+  "author": "David Siegel",
+  "license": "MIT",
+  "dependencies": {
+    "nan": "^2.7.0"
+  }
+}
