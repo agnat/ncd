@@ -5,8 +5,8 @@
   , "cflags_cc!" : [ "-fno-rtti", "-fno-exceptions" ]
   }
 , "targets": [
-    { "target_name": "basic_work"
-    , "sources"    : [ "basic_work.cpp" ]
+    { "target_name": "errors_and_returns"
+    , "sources"    : [ "errors_and_returns.cpp" ]
     , "conditions": [
       [ "OS=='mac'", {
         "xcode_settings" : {

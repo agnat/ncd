@@ -51,7 +51,7 @@ private:
 
 #undef NCD_DBASN
 
-class WorkRequest;
+class WorkRequestBase;
 
 }  // end of namespace detail
 
@@ -64,7 +64,7 @@ public:  // constructors & destructor
   {
     NCD_DBMQ("MainQueue::MainQueue(...)");
     mHandle->data = this;
-    uv_async_init(loop, mHandle, OnWake);
+    uv_async_init(loop, mHandle, OnFlush);
   }
   ~MainQueue() {
     NCD_DBMQ("MainQueue::~MainQueue()");
@@ -78,9 +78,9 @@ public:  // API
     push(callback);
   }
 
-private: friend detail::WorkRequest;
+private: friend detail::WorkRequestBase;
   void
-  wake() {
+  flush() {
     Nan::HandleScope scope;
     ScopedLock scopedLock(mQueueLock);
     while (!mPendingItems.empty()) {
@@ -96,8 +96,8 @@ private: friend detail::WorkRequest;
 private:  // event handlers
   static
   void
-  OnWake(uv_async_t * handle) {
-    nauv_unwrap<MainQueue>(handle)->wake();
+  OnFlush(uv_async_t * handle) {
+    nauv_unwrap<MainQueue>(handle)->flush();
   }
 
   static

@@ -107,11 +107,12 @@ private:
 
 namespace detail {
 
+// This requires definitions of WorkRequestBase, MainQueue, and WorkQueue
 inline
 void
-WorkRequest::handleDone(int status) {
-  NCD_DBWRK("WorkRequest::handleDone() status: " << status);
-  mMainQueue->wake();
+WorkRequestBase::handleDone(int status) {
+  NCD_DBWRK("WorkRequestBase::handleDone() status: " << status);
+  mMainQueue->flush();
   onDone();
   mOwner.doneWith(this);
 }

@@ -2,7 +2,7 @@
   "name": "ncd",
   "version": "1.0.0",
   "description": "not central dispatch.",
-  "main": "gyp.js",
+  "main": "./lib/include_dir.js",
   "scripts": {
     "test": "tap tests/*.js"
   },

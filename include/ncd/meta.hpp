@@ -1,10 +1,10 @@
-#ifndef NAN_REFLECTION_H_
-# define NAN_REFLECTION_H_
+#ifndef NCD_META_HPP_
+# define NCD_META_HPP_
 
 # include <functional>
 # include <tuple>
 
-namespace Nan {
+namespace ncd {
 
 namespace detail {
 
@@ -89,7 +89,7 @@ make_function(F &&f) {
 template <typename T, typename... Args>
 T
 pick(Args&&... args) {
-//pick(Args... args) {
+//pick(Args... args)
   using type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
   return std::get<type&>(std::forward_as_tuple(args...));
   //return std::get<type>(std::make_tuple(args...));
@@ -104,14 +104,14 @@ pick(Args&&... args) {
 template <typename Result, typename... WantedArgs, typename... Args>
 Result
 invokeChoosy(std::function<Result(WantedArgs...)> const& f, Args&&... all_args) {
-//invokeChoosy(std::function<Result(WantedArgs...)> const& f, Args... all_args) {
+//invokeChoosy(std::function<Result(WantedArgs...)> const& f, Args... all_args)
   return f(pick<WantedArgs>(all_args...)...);
 }
 
 template <typename F, typename... Args>
 void
 invokeChoosy(F const& f, Args&&... all_args) {
-//invokeChoosy(F const& f, Args... all_args) {
+//invokeChoosy(F const& f, Args... all_args)
   invokeChoosy(make_function(f), all_args...);
 }
 
@@ -127,11 +127,5 @@ template <int... S> struct gens<0, S...> { using type = seq<S...>; };
 } // end of namespace detail
 
 
-namespace detail {
-
-
-} // end of namespace detail
-
-
-} // end of namespace Nan
-#endif // NAN_REFLECTION_H_
+} // end of namespace ncd
+#endif // NCD_META_HPP_

@@ -14,6 +14,8 @@ using v8::Object;
 
 std::thread::id threadId() { return std::this_thread::get_id(); }
 
+//=== Plain Function =========================================================
+
 void work() { std::cerr << "work on thread " << threadId() << std::endl; }
 void done() { std::cerr << "done on thread " << threadId() << std::endl; }
 
@@ -23,29 +25,38 @@ workFunction(Nan::FunctionCallbackInfo<Value> const& args) {
   ncd::defaultWorkQueue().dispatch(work, done);
 }
 
-struct Work {
-  Work(unsigned delay_) 
-    : delay(delay_)
-  { std::cerr << "constructor on thread " << threadId() << std::endl; }
+//=== Callable Object ========================================================
 
+struct Work {
+  Work() {
+    std::cerr << "constructor on thread " << threadId() << std::endl;
+  }
   void
   operator()() {
-    std::cerr << "work on thread " << threadId() << std::endl; 
-    usleep(delay);
+    std::cerr << "work on thread " << threadId() << std::endl;
   }
-  unsigned delay;
 };
 
-void
-workObject(Nan::FunctionCallbackInfo<Value> const& args) {
+void workObject(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch(Work(1000), done);
+  ncd::defaultWorkQueue().dispatch(Work(), done);
 }
 
-void
-Init(Local<Object> exports) {
+//=== Lambda Expression ======================================================
+
+void workLambda(Nan::FunctionCallbackInfo<Value> const& args) {
+  std::cerr << "dispatch on thread " << threadId() << std::endl;
+  ncd::defaultWorkQueue().dispatch([](){
+    std::cerr << "work on thread " << threadId() << std::endl;
+  }, done);
+}
+
+//=== Init ===================================================================
+
+void Init(Local<Object> exports) {
   exports->Set(ncd::v8str("workFunction"), ncd::function(workFunction));
-  exports->Set(ncd::v8str("workObject"), ncd::function(workObject));
+  exports->Set(ncd::v8str("workObject"),   ncd::function(workObject));
+  exports->Set(ncd::v8str("workLambda"),   ncd::function(workLambda));
 }
 
 }  // end of anonymous namespace
