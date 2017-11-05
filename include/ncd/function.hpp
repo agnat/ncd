@@ -1,6 +1,8 @@
 #ifndef NCD_FUNCTION_HPP_
 # define NCD_FUNCTION_HPP_
 
+# include <ncd/async_error.hpp>
+
 namespace ncd {
 
 //=============================================================================
@@ -20,6 +22,17 @@ toLocalChecked(v8::MaybeLocal<V8Type> v) { return v.ToLocalChecked(); }
 }  // end of namespace detail
 
 struct ConvenientConverters {
+  static
+  v8::Local<v8::Value>
+  toJS(AsyncError * error) {
+    v8::Isolate * iso = v8::Isolate::GetCurrent();
+    if (error) {
+      v8::Local<v8::String> message = v8str(error->message());
+      return v8::Exception::Error(message);
+    } else {
+      return v8::Null(iso);
+    }
+  }
   template <typename T>
   static
   v8::Local<v8::Value>

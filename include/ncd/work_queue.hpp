@@ -31,6 +31,8 @@ namespace detail {
 struct MainQueueTLSKey {};
 using TLSMainQueue = ThreadLocal<MainQueueTLSKey, MainQueue>;
 
+//=== WorkRequestBase =========================================================
+
 class WorkRequestBase {
 public:
   WorkRequestBase(WorkQueue & owner) 
@@ -95,6 +97,8 @@ private:  // data members
   MainQueuePtr mMainQueue;
   WorkQueue &  mOwner;
 };
+
+//=== WorkResultHandler =======================================================
 
 template <typename Sig, typename ReturnPolicy>
 struct WorkResultHandler;
@@ -177,6 +181,8 @@ struct WorkResultHandler<R(typename ReturnPolicy::ErrorType**), ReturnPolicy> {
   typename ReturnPolicy::ErrorType * mError;
 };
 
+//=== WorkRequest =============================================================
+
 template <typename WorkSig, typename ReturnPolicy>
 class WorkRequest : public WorkRequestBase
                   , public WorkResultHandler<WorkSig, ReturnPolicy>
@@ -191,6 +197,11 @@ public:
     : WorkRequestBase(owner), mWork(work), mDone(done)
   {}
 
+  template <typename W>
+  WorkRequest(W && work, WorkQueue & owner, v8::Local<v8::Function> & done) 
+    : WorkRequestBase(owner), mWork(work), mDone(Function<DoneSignature>(done))
+  {}
+
 private:
   void
   work() override { this->invokeWork(mWork); }
@@ -202,22 +213,6 @@ private:
   std::function<WorkSig>     mWork;
   std::function<DoneSignature> mDone; 
 };
-
-template <typename ReturnPolicy, typename Work, typename Callback>
-std::unique_ptr<
-  WorkRequest<
-    typename detail::callable_signature<Work>::type,
-    ReturnPolicy
-  >
->
-makeWorkRequest(Work && work, WorkQueue & owner, Callback && done) {
-  using Request =
-    WorkRequest<
-      typename detail::callable_signature<Work>::type,
-      ReturnPolicy
-    >;
-  return std::make_unique<Request>(work, owner, done);
-}
 
 } // end of namespace detail
 
@@ -241,7 +236,6 @@ struct ReturnPolicy {
   };
 };
 
-struct AsyncError {};
 
 using DefaultReturnPolicy = ReturnPolicy<AsyncError>;
 
@@ -272,7 +266,7 @@ public:  // constructors & destructor
   template <typename Work>
   void
   dispatch(Work && work, v8::Local<v8::Function> done) {
-    dispatch(work, Function<void()>(done));
+    push(work, done);
   }
 
 protected: friend detail::WorkRequestBase;
@@ -293,7 +287,11 @@ private:  // member functions
   push(Work && work, Callback && done) {
     NCD_DBWQ("WorkQueue::push(...)");
     ScopedLock scopedLock(mQueueLock);
-    mPendingWork.emplace_back(detail::makeWorkRequest<DefaultReturnPolicy>(work, *this, done));
+    using Request = detail::WorkRequest<
+      typename detail::callable_signature<Work>::type,
+      DefaultReturnPolicy
+    >;
+    mPendingWork.emplace_back(std::make_unique<Request>(work, *this, done));
     scheduleWork();
   }
   

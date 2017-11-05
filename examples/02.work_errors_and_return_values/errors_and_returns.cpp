@@ -16,26 +16,31 @@ std::thread::id threadId() { return std::this_thread::get_id(); }
 
 //=== Error Handling =========================================================
 
-ncd::AsyncError* work_return_ok() {
+ncd::AsyncError*
+work_return_ok() {
   std::cerr << "success on thread " << threadId() << std::endl;
   return nullptr;
 }
 
-ncd::AsyncError* work_return_error() {
+ncd::AsyncError*
+work_return_error() {
   std::cerr << "error on thread " << threadId() << std::endl;
   return new ncd::AsyncError();
 }
 
-void work_outparam_ok(ncd::AsyncError ** error) {
+void
+work_outparam_ok(ncd::AsyncError ** error) {
   std::cerr << "success on thread " << threadId() << std::endl;
 }
 
-void work_outparam_error(ncd::AsyncError ** error) {
+void
+work_outparam_error(ncd::AsyncError ** error) {
   std::cerr << "error on thread " << threadId() << std::endl;
   *error = new ncd::AsyncError();
 }
 
-void done(ncd::AsyncError * error) {
+void
+done(ncd::AsyncError * error) {
   std::cerr << "done: " << (error ? "failed" : "ok") << std::endl;
   if (error) delete error;
 }
