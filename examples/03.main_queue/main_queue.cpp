@@ -14,7 +14,7 @@ using v8::Object;
 
 std::thread::id threadId() { return std::this_thread::get_id(); }
 
-//=== Error Handling =========================================================
+//=== Main Queue =============================================================
 
 void
 mainQueueCallbacks(Nan::FunctionCallbackInfo<Value> const& args) {

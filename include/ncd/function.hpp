@@ -1,6 +1,9 @@
 #ifndef NCD_FUNCTION_HPP_
 # define NCD_FUNCTION_HPP_
 
+# include <nan.h>
+
+# include <ncd/v8_utils.hpp>
 # include <ncd/async_error.hpp>
 
 namespace ncd {
@@ -28,6 +31,7 @@ struct ConvenientConverters {
     v8::Isolate * iso = v8::Isolate::GetCurrent();
     if (error) {
       v8::Local<v8::String> message = v8str(error->message());
+      delete error;
       return v8::Exception::Error(message);
     } else {
       return v8::Null(iso);

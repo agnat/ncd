@@ -13,23 +13,6 @@
 
 namespace ncd {
 
-inline
-v8::Local<v8::String>
-v8str(std::string const& str) {
-  return Nan::New(str).ToLocalChecked();
-}
-
-inline
-v8::Local<v8::Function>
-function(Nan::FunctionCallback f) {
-  return Nan::New<v8::Function>(f);
-}
-
-namespace detail {
-template <typename T>
-using CopyablePersistent = v8::Persistent<T, v8::CopyablePersistentTraits<T>>;
-} // end of namespace detail
-
 }  // ncd
 
 # include <ncd/function.hpp>
@@ -79,29 +62,6 @@ v8args2vector(CallbackInfo const& args, ArgumentVector & out) {
     out.push_back(args[i]);
   }
 }
-
-//=============================================================================
-// Streams
-//=============================================================================
-
-template <typename T>
-class StreamBase : Nan::ObjectWrap {
-public:
-protected:
-  using QueueType = std::deque<T>;
-  Mutex mMutex;
-  Condition mCondition;
-  QueueType mQueue;
-private:
-  size_t mCapacity;
-};
-
-template <typename T, typename Converters>
-class WritableStream {
-public:
-protected:
-private:
-};
 
 //=== Implementations =========================================================
 

@@ -1,6 +1,13 @@
 #ifndef NCD_MAIN_QUEUE_HPP_
 # define NCD_MAIN_QUEUE_HPP_
 
+# include <deque>
+# include <functional>
+
+# include <nan.h>
+
+# include <ncd/uv.hpp>
+
 //# define NCD_TRACE_MAIN_QUEUE
 //# define NCD_TRACE_ASYNC
 

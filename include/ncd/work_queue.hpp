@@ -2,6 +2,10 @@
 # define NCD_WORK_QUEUE_HPP_
 
 # include <ncd/meta.hpp>
+# include <ncd/uv.hpp>
+# include <ncd/main_queue.hpp>
+# include <ncd/queue_getters.hpp>
+# include <ncd/function.hpp>
 
 //# define NCD_TRACE_WORK_QUEUE
 //# define NCD_TRACE_WORK
@@ -27,9 +31,6 @@ namespace ncd {
 class WorkQueue;
 
 namespace detail {
-
-struct MainQueueTLSKey {};
-using TLSMainQueue = ThreadLocal<MainQueueTLSKey, MainQueue>;
 
 //=== WorkRequestBase =========================================================
 
@@ -315,23 +316,6 @@ private:  // data members
 };
 
 # undef NCD_DBWQ
-
-// result is valid in work functions only
-inline
-MainQueue&
-mainQueue() {
-  auto queue = detail::TLSMainQueue::get();
-  assert(queue != nullptr);
-  return *queue;
-}
-
-namespace detail {
-bool
-isMainThread() {
-  return detail::TLSMainQueue::get() == nullptr;
-}
-}  // end of namespace detail
-
 
 
 }  // end of namespace ncd

@@ -1,6 +1,13 @@
 #ifndef NCD_ASYNC_FUNCTION_HPP_
 # define NCD_ASYNC_FUNCTION_HPP_
 
+# include <iostream>  // XXX
+# include <v8.h>
+
+# include <ncd/v8_utils.hpp>
+# include <ncd/function.hpp>
+# include <ncd/queue_getters.hpp>
+
 namespace ncd {
 
 //=============================================================================
