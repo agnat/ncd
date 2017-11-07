@@ -28,7 +28,7 @@ eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
 }
 ````
 
-After grabbing some arguments the code creates an `AsyncEventEmitter` in (1). It wraps a javascript `EventEmitter` for use on a different thread. In (2) a lambda expression is dipatched to the threadpool. The expression captures copies of `delay`, `iterations` and the `emitter`. This is an ncd pattern: An `AsyncSomething` is first allocated on the main thread and then copied around to different threads. The call to `dispatch(...)` returns immediately and the lambda is launched on the thredpool. In (3) the async event emitter is invoked, sending progress events back to javascript. After the execution finishes the callback passed in (4) is invoked on the main thread. We simply emit a done event. Note how `AsyncFunction`, the thing behind `AsyncEventEmitter` plays nicely with `std::bind(...)`.
+After grabbing some arguments the code creates an `AsyncEventEmitter` in ①. It wraps a javascript `EventEmitter` for use on a different thread. In ② a lambda expression is dipatched to the threadpool. The expression captures copies of `delay`, `iterations` and the `emitter`. This is an ncd pattern: An `AsyncSomething` is first allocated on the main thread and then copied around to different threads. The call to `dispatch(...)` returns immediately and the lambda is launched on the thredpool. In ③ the async event emitter is invoked, sending progress events back to javascript. After the execution finishes the callback passed in ④ is invoked on the main thread. We simply emit a done event. Note how `AsyncFunction`, the thing behind `AsyncEventEmitter` plays nicely with `std::bind(...)`.
 
 The javascript code looks like this:
 
