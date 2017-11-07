@@ -84,39 +84,6 @@ make_function(F &&f) {
   return make_function_type<F>(std::forward<F>(f));
 }
 
-// Given an argument list pick and return the argument of type T
-// allowing for additional cv qualification on T
-template <typename T, typename... Args>
-T
-pick(Args&&... args) {
-//pick(Args... args)
-  using type = typename std::remove_cv<typename std::remove_reference<T>::type>::type;
-  return std::get<type&>(std::forward_as_tuple(args...));
-  //return std::get<type>(std::make_tuple(args...));
-}
-
-// Invoke a given std::function using arguments from a given set. The
-// function may use any combination of arguments from the set or none at all.
-// This allows the implementation of APIs where the signature of the callback
-// drives the argument selection. A callback "summons" arguments as it sees fit
-// and can ignore others. The only requirement is that each type occurs only
-// once... hence "argument set"
-template <typename Result, typename... WantedArgs, typename... Args>
-Result
-invokeChoosy(std::function<Result(WantedArgs...)> const& f, Args&&... all_args) {
-//invokeChoosy(std::function<Result(WantedArgs...)> const& f, Args... all_args)
-  return f(pick<WantedArgs>(all_args...)...);
-}
-
-template <typename F, typename... Args>
-void
-invokeChoosy(F const& f, Args&&... all_args) {
-//invokeChoosy(F const& f, Args... all_args)
-  invokeChoosy(make_function(f), all_args...);
-}
-
-
-
 namespace detail {
 
 template <int...> struct seq {};

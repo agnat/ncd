@@ -317,6 +317,23 @@ private:  // data members
 
 # undef NCD_DBWQ
 
+//=== Implementations =========================================================
+
+namespace detail {
+
+inline
+void
+WorkRequestBase::handleDone(int status) {
+  NCD_DBWRK("WorkRequestBase::handleDone() status: " << status);
+  mMainQueue->flush();
+  onDone();
+  mOwner.doneWith(this);
+}
+
+# undef NCD_DBWRK
+
+}  // end of namespace detail
+
 
 }  // end of namespace ncd
 #endif  // NCD_WORK_QUEUE_HPP_
