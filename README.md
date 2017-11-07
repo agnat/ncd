@@ -1,5 +1,4 @@
 **<p align="center">Early draft – Not ready for production</p>**
-<p align="center">Docs and tests are AWOL – Please refer to the examples.</p>
 
 # ncd – not central dispatch
 
@@ -53,3 +52,5 @@ These pairs of queues provide generic, bidirectional inter-thread communication.
 ncd introduces `AsyncHandle<>`s. These handles are used to keep javascript objects alive while work is executing on a thread. This solves many common housekeeping tasks in an unobtrusive way.
 
 `AsyncFunctions` are thread-safe wrappers of javascript functions. They have the syntax of normal function calls but behind the scenes they emit an event on the main thread and invoke the function there.
+
+<p align="center">Docs and tests are AWOL – Please refer to the examples.</p>
