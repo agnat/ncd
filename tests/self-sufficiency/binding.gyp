@@ -7,6 +7,7 @@
   }
 , "targets": [
     { "target_name": "async_error_hpp",    "sources": [ "async_error_hpp.cpp" ] }
+  , { "target_name": "async_event_emitter_hpp", "sources": [ "async_event_emitter_hpp.cpp" ] }
   , { "target_name": "async_function_hpp", "sources": [ "async_function_hpp.cpp" ] }
   , { "target_name": "async_handle_hpp",   "sources": [ "async_handle_hpp.cpp" ] }
   , { "target_name": "function_hpp",       "sources": [ "function_hpp.cpp" ] }

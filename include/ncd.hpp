@@ -22,6 +22,7 @@ namespace ncd {
 
 # include <ncd/async_handle.hpp>
 # include <ncd/async_function.hpp>
+# include <ncd/async_event_emitter.hpp>
 
 namespace ncd {
 
