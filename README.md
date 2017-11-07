@@ -1,8 +1,7 @@
-# ncd – not central dispatch
-
-
 **<p align="center">Early draft – Not ready for production</p>**
 <p align="center">Docs and tests are AWOL – Please refer to the examples.</p>
+
+# ncd – not central dispatch
 
 ncd is a library to support asynchronous C++ node addons. It provides a number of primitives to work with the UV threadpool. The library uses semantics familiar to every node developer. It allows for a very casual coding style while still facilitating the development of reusable components.
 
