@@ -1,17 +1,18 @@
-const worker_patterns = require('./build/Release/worker_patterns')
-    , EventEmitter = require('events')
+const workers = require('./build/Release/worker_patterns')
+  , EventEmitter = require('events')
+  , ee = new EventEmitter()
+    . on('progress', (p) => { console.log('progress', p) })
+    . on('done',     ( ) => { console.log('done') })
+
+workers.eventEmittingWorker(10000, 10, ee)
 
 const progress = (i) => { console.log("progress", i) }
     , done = (...args) => { console.log("done", args) }
 
-//=== Inline Worker ===================================
-worker_patterns.inlineWorker(10000, 10, progress, done)
+//=== Inline Worker ==========================================================
+workers.inlineWorker(10000, 10, progress, done)
 
-//=== Event Emitting Worker ===========================
-const ee = new EventEmitter();
-ee.on('progress', (i) => { console.log('progress', i) })
-ee.on('done', (...args) => { console.log('done', args) })
-worker_patterns.eventEmittingWorker(10000, 10, ee)
+//=== Event Emitting Worker ==================================================
 
-//=== Worker Component ================================
-worker_patterns.workerComponent(10000, 10, ee)
+//=== Worker Component =======================================================
+workers.workerComponent(10000, 10, ee)

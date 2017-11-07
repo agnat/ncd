@@ -8,6 +8,7 @@
 
 namespace {
 
+using namespace std::string_literals;
 using v8::Local;
 using v8::Value;
 using v8::Object;
@@ -41,20 +42,17 @@ inlineWorker(Nan::FunctionCallbackInfo<Value> const& args) {
 
 void
 eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
-  unsigned delay = args[0]->Uint32Value();
+  unsigned delay      = args[0]->Uint32Value();
   unsigned iterations = args[1]->Uint32Value();
   ncd::AsyncEventEmitter emitter(args[2].As<v8::Object>());
-
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  using namespace std::string_literals;
+
   ncd::defaultWorkQueue().dispatch([=](){
     for (unsigned i = 0; i < iterations; ++i) {
       emitter.emit("progress"s, i);
       usleep(delay);
     }
   }, std::bind(emitter.emit, "done"s));
-
-  ;
 }
 
 //============================================================================
@@ -71,7 +69,6 @@ public:
   {}
   void
   operator()() {
-    using namespace std::string_literals;
     for (unsigned i = 0; i < mIterations; ++i) {
       mEmit("progress"s, i);
       usleep(mDelay);
@@ -93,7 +90,6 @@ workerComponent(Nan::FunctionCallbackInfo<Value> const& args) {
   ncd::Function<> emit(emit_, emitter);
 
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  using namespace std::string_literals;
   ncd::defaultWorkQueue().dispatch(WorkerComponent(delay, iterations, emitter),
                                    std::bind(emit, "done"s));
 }
