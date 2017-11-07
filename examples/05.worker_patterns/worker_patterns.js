@@ -4,15 +4,15 @@ const workers = require('./build/Release/worker_patterns')
     . on('progress', (p) => { console.log('progress', p) })
     . on('done',     ( ) => { console.log('done') })
 
-workers.eventEmittingWorker(10000, 10, ee)
+workers.eventEmittingWorker(5000, 10, ee)
 
 const progress = (i) => { console.log("progress", i) }
     , done = (...args) => { console.log("done", args) }
 
 //=== Inline Worker ==========================================================
-workers.inlineWorker(10000, 10, progress, done)
+workers.inlineWorker(5000, 10, progress, done)
 
 //=== Event Emitting Worker ==================================================
 
 //=== Worker Component =======================================================
-workers.workerComponent(10000, 10, ee)
+workers.workerComponent(5000, 10, ee)
