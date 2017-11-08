@@ -1,3 +1,4 @@
+// Copyright 2017 David Siegel. Distributed under the MIT license. See LICENSE.
 #ifndef NCD_ASYNC_EVENT_EMITTER_HPP_
 # define NCD_ASYNC_EVENT_EMITTER_HPP_
 

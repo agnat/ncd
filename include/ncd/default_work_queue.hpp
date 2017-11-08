@@ -1,3 +1,4 @@
+// Copyright 2017 David Siegel. Distributed under the MIT license. See LICENSE.
 #ifndef NCD_DEFAULT_WORK_QUEUE_HPP_
 # define NCD_DEFAULT_WORK_QUEUE_HPP_
 

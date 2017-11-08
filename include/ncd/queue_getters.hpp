@@ -1,3 +1,4 @@
+// Copyright 2017 David Siegel. Distributed under the MIT license. See LICENSE.
 #ifndef NCD_QUEUE_GETTERS_HPP_
 # define NCD_QUEUE_GETTERS_HPP_
 

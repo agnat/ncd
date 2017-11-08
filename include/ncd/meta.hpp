@@ -1,3 +1,4 @@
+// Copyright 2017 David Siegel. Distributed under the MIT license. See LICENSE.
 #ifndef NCD_META_HPP_
 # define NCD_META_HPP_
 

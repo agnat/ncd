@@ -1,3 +1,4 @@
+// Copyright 2017 David Siegel. Distributed under the MIT license. See LICENSE.
 #ifndef NCD_WORK_QUEUE_HPP_
 # define NCD_WORK_QUEUE_HPP_
 
@@ -189,7 +190,6 @@ class WorkRequest : public WorkRequestBase
                   , public WorkResultHandler<WorkSig, ReturnPolicy>
 {
   using ErrorType = typename ReturnPolicy::ErrorType;
-  using ResultConverter = typename ReturnPolicy::template ResultConverter<WorkSig>;
   using DoneSignature = typename WorkResultHandler<WorkSig, ReturnPolicy>::CallbackSig;
 
 public:
@@ -217,29 +217,20 @@ private:
 
 } // end of namespace detail
 
-//=== WorkQueue ===============================================================
+//=== Return Policy ===========================================================
 
 template <typename Error>
 struct ReturnPolicy {
   using ErrorType = Error;
   using ErrorPtr = ErrorType*;
-
-  template <typename Sig>
-  struct ResultConverter;
-  
-  template <typename R>
-  struct ResultConverter<R(ErrorPtr*)> {
-    ErrorPtr error;
-  };
-
-  template <typename R>
-  struct ResultConverter<R()> {
-  };
 };
-
 
 using DefaultReturnPolicy = ReturnPolicy<AsyncError>;
 
+//=== WorkQueue ===============================================================
+
+// TODO: Expose this to javascript. Users should be able to create their own
+//       work queues with custom thread count.
 class WorkQueue {
 private:  // types
   using WorkPtr = std::unique_ptr<detail::WorkRequestBase>;
@@ -333,7 +324,6 @@ WorkRequestBase::handleDone(int status) {
 # undef NCD_DBWRK
 
 }  // end of namespace detail
-
 
 }  // end of namespace ncd
 #endif  // NCD_WORK_QUEUE_HPP_

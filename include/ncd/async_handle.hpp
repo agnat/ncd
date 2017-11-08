@@ -1,3 +1,4 @@
+// Copyright 2017 David Siegel. Distributed under the MIT license. See LICENSE.
 #ifndef NCD_ASYNC_HANDLE_H_
 # define NCD_ASYNC_HANDLE_H_
 
