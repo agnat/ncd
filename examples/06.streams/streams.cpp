@@ -19,8 +19,8 @@ using WriteStream = ncd::WritableStream<double>;
 void
 makeWriteStream(Nan::FunctionCallbackInfo<Value> const& args) {
   Nan::HandleScope scope;
-  v8::Local<v8::Object> ws = WriteStream::New(args[0].As<v8::Object>());
-  //ws.once("data", [](Nan::FunctionCallbackInfo<v8::Value> const& args) {});
+  v8::Local<v8::Object> options = args[0].As<v8::Object>();
+  v8::Local<v8::Object> ws = WriteStream::New(options);
 
   WriteStream::AsyncStream stream_(ws);
   ncd::defaultWorkQueue().dispatch([=](){

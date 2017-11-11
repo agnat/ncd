@@ -50,4 +50,4 @@ void Init(Local<Object> exports) {
 
 }  // end of anonymous namespace
 
-NODE_MODULE(basic_work, Init)
+NCD_NODE_ADDON(Init)
