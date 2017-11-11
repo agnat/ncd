@@ -49,7 +49,7 @@ public:
       tpl->SetClassName(v8str(className));
       tpl->InstanceTemplate()->SetInternalFieldCount(1);
       sTemplate.Reset(tpl);
-      Derived::makeTemplate(tpl);
+      Derived::makeClass(tpl);
       v8::Local<v8::Function> constructor = tpl->GetFunction();
       return constructor;
     } else {
@@ -83,7 +83,7 @@ public:
 
   static
   void
-  makeTemplate(v8::Local<v8::FunctionTemplate>) {}
+  makeClass(v8::Local<v8::FunctionTemplate>) {}
 
 
   static
@@ -94,6 +94,13 @@ public:
     Nan::New(sTemplate)->PrototypeTemplate()->Set(v8str(name),
         detail::wrapMemberFunction<Derived>(std::mem_fn(memFn)));
   }
+
+  static
+  Derived*
+  unwrap(v8::Local<v8::Object> obj) {
+    return static_cast<Derived*>(obj->GetAlignedPointerFromInternalField(0));
+  }
+
 
 private:
   static

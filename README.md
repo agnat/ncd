@@ -54,3 +54,4 @@ ncd introduces `AsyncHandle<>`s. These handles are used to keep javascript objec
 `AsyncFunctions` are thread-safe wrappers of javascript functions. They have the syntax of normal function calls but behind the scenes they emit an event on the main thread and invoke the function there.
 
 <p align="center">Docs and tests are AWOL – Please refer to the examples.</p>
+

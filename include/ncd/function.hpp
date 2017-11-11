@@ -18,6 +18,7 @@ namespace ncd {
 template <typename Converters>
 class FunctionBase {
 public:
+  FunctionBase() {}
   explicit
   FunctionBase(v8::Local<v8::Function> f, v8::Local<v8::Value> target)
     : mFunction(v8::Isolate::GetCurrent(), f), mTarget(v8::Isolate::GetCurrent(), target)
