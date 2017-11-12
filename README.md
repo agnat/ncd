@@ -161,7 +161,7 @@ var f = (status) => { return status >= 0 }
 f(5)
 ````
 
-The corresponding C++ lambda expression looks like this:
+The equivalent C++ lambda expression looks like this:
 
 ````c++
 auto f = [](int status) { return status >= 0; };
