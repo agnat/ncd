@@ -6,7 +6,7 @@ ncd is a library to support asynchronous C++ node addons. It provides a number o
 
 The core principle of ncd is: Pass code, not data. The user dispatches code to run on the pool or the main thread respectivley. The user can choose from plain functions, callable objects or lambda expressions. Anything callable will work.
 
-If you are unfamiliar with lambda expressions read the [20 seconds primer]() now.
+If you are unfamiliar with lambda expressions read the [20 seconds primer](#c-lambda-expression-primer) now.
 
 ## Appetizer
 
