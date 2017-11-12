@@ -44,6 +44,7 @@ protected:
   Mutex&     mutex()     { return mMutex; }
   Condition& condition() { return mCondition; }
 
+  // callers are required to hold the mutex
   bool isEmpty() const { return mQueue.empty(); }
   bool isFull()  const { return mQueue.size() >= mCapacity; }
 
@@ -93,7 +94,7 @@ class WritableStream
 public:  // types
   using ValueType = AsyncValue<T, Converters>;
   using Self = WritableStream<T, Converters>;
-  using Base = StreamBase<AsyncValue<T, Converters>, Self>;
+  using Base = StreamBase<ValueType, Self>;
   using AsyncStream = AsyncStream<Self>;
   using AsyncEndpoint = AsyncReader<Self>;
 
@@ -121,7 +122,6 @@ public:
     }
     return result;
   }
-protected:
 
 private:
   void
