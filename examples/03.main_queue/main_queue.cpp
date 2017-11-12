@@ -27,10 +27,28 @@ mainQueueCallbacks(Nan::FunctionCallbackInfo<Value> const& args) {
   }, [](){ std::cerr << "done" << std::endl; });
 }
 
+void
+pinnedObject(Nan::FunctionCallbackInfo<Value> const& args) {
+  Nan::HandleScope scope;
+  ncd::AsyncHandle<v8::Object> pinnedObject(args[0].As<v8::Object>());
+  
+  ncd::defaultWorkQueue().dispatch([=](){
+    for (unsigned i = 0; i < 10; ++i) {
+      usleep(10000);
+      ncd::mainQueue().dispatch([=](){
+        Nan::HandleScope scope;
+        v8::Local<v8::Object> object = pinnedObject.jsValue();
+        object->Set(Nan::New("progress").ToLocalChecked(), Nan::New(i));
+      });
+    }
+  }, [](){ std::cerr << "done" << std::endl; });
+}
+
 //=== Init ===================================================================
 
 void Init(Local<Object> exports) {
   exports->Set(ncd::v8str("mainQueueCallbacks"), ncd::function(mainQueueCallbacks));
+  exports->Set(ncd::v8str("pinnedObject"), ncd::function(pinnedObject));
 }
 
 }  // end of anonymous namespace

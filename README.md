@@ -1,4 +1,4 @@
-**<p align="center">Early draft – Not ready for production</p>**
+**<p align="center">Early draft</p>**
 
 # ncd – not central dispatch
 
@@ -79,7 +79,7 @@ doWork(Nan::FunctionCallbackInfo<Value> const& args) {
 
 ````
 
-Unlike more traditional C++ callback APIs, ncd callbacks don't necessarily have a fixed signature. Many of them are very flexible and the user can choose from a number of options. This is documented in the reference. 
+Unlike more traditional C++ callback APIs, ncd callbacks don't necessarily have a fixed signature. Some of them are very flexible and the user can choose from a number of options. This is documented in the reference. 
 
 #### Lambda Expressions
 
@@ -110,7 +110,9 @@ Since this is C++ [the actual details of lambda expressions](http://en.cpprefere
 
 The [basic work example](https://github.com/agnat/ncd/tree/master/examples/01.basic_work) covers all three callback variants.
 
-### Queues
+### Primitives
+
+#### Queues
 
 At the core of ncd are two types of code queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary.
 
@@ -118,11 +120,54 @@ At the core of ncd are two types of code queues. The user dispatches code to a q
 
 Code executing on the threadpool has access to an instance of `MainQueue`. Code dispatched on this type of queue is executed on the main thread and can use the javascript engine.
 
-These pairs of queues provide a generic, bidirectional inter-thread facility not unsimilar to apple's grand central dispatch. 
+````c++
+std::thread::id threadId() { return std::this_thread::get_id(); }
 
-### Handles and Functions
+void
+workFunction(Nan::FunctionCallbackInfo<Value> const& args) {
+  std::cerr << "main thread " << threadId() << std::endl;
+  
+  ncd::defaultWorkQueue().dispatch([](){
+    std::cerr << "pool thread " << threadId() << std::endl;
+  
+    ncd::mainQueue().dispatch([](){
+      std::cerr << "main thread " << threadId() << std::endl;
+    });
+  }, done);
+}
+````
 
-ncd introduces `AsyncHandle<>`s. These handles are used to keep javascript objects alive while work is executing on a thread. This solves many common housekeeping tasks in an unobtrusive way.
+These pairs of queues provide a generic, bidirectional inter-thread facility not unsimilar to apple's grand central dispatch. Both, the apple and the libuv event loop have a notion of a main thread. They both provide a threadpool. However, as the name indicates the similarities only go so far. 
+
+If you are familiar with libuv programming you already guessed it. Behind the scenes the work queue deals with items of type `uv_work_t`. The main queue handles the other direction and holds a `uv_async_t` that is the backchannel for the current work callback.
+
+#### Handles
+
+ncd introduces `AsyncHandle<>`s. These handles are used to keep javascript objects alive while work is executing on a thread. This solves many common housekeeping tasks in an unobtrusive way:
+
+````c++
+void
+workFunction(Nan::FunctionCallbackInfo<Value> const& args) {
+  ncd::AsyncHandle<v8::Object> pinnedObject(args[0].As<v8::Object>());  // ①
+  
+  ncd::defaultWorkQueue().dispatch([=](){  // ②
+    for (unsigned i = 0; i < 10; ++i) {
+      usleep(10000);
+      ncd::mainQueue().dispatch([=](){     // ③
+        Nan::HandleScope scope;
+        v8::Local<v8::Object> object = pinnedObject.jsValue();          // ④
+        object->Set(Nan::New("progress").ToLocalChecked(), Nan::New(i));
+      });
+    }
+  }, done);
+}
+
+````
+
+The code creates an `AsyncHandle<v8::Object>` in (1) pinning an object for later use. The handle is copied
+to the worker thread in (2) and back to the main thread in (3). Finally, back on the main thread the javascript value is extracted in (4). The code above can be found in the [main queue examples](https://github.com/agnat/ncd/tree/master/examples/03.main_queue).
+
+### Utilities
 
 `AsyncFunctions` are thread-safe wrappers of javascript functions. They are invoked like regular functions but behind the scenes they emit an event on the main thread and invoke the javascript function there.
 
