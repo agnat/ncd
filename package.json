@@ -1,6 +1,6 @@
 {
   "name": "ncd",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "not central dispatch.",
   "main": "./lib/include_dir.js",
   "scripts": {
