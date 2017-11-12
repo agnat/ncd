@@ -74,8 +74,7 @@ struct WorkWithParam {
 
 void
 doWork(Nan::FunctionCallbackInfo<Value> const& args) {
-  ncd::defaultWorkQueue().dispatch(free_function, done);
-  ncd::defaultWorkQueue().dispatch(CallableObject(), done);
+  ncd::defaultWorkQueue().dispatch(WorkWithParam(5), done);
 }
 
 ````
