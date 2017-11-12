@@ -2,9 +2,9 @@
 
 # ncd – not central dispatch
 
-ncd is a library to support asynchronous C++ node addons. It provides a number of primitives to work with the UV threadpool. The library uses semantics familiar to every node developer. It allows for a very casual coding style while still facilitating the development of reusable components.
+ncd is a library to support asynchronous C++ node addons. It provides a number of primitives to work with the UV thread pool. The library uses semantics familiar to every node developer. It allows for a very casual coding style while still facilitating the development of reusable components.
 
-The core principle of ncd is: Pass code, not data. The user dispatches code to run on the pool or the main thread respectivley. The user can choose from plain functions, callable objects or lambda expressions. Anything callable will work.
+The core principle of ncd is: Pass code, not data. The user dispatches code to run on the pool or the main thread respectively. The user can choose from plain functions, callable objects or lambda expressions. Anything [callable](http://en.cppreference.com/w/cpp/concept/Callable) will work.
 
 If you are unfamiliar with lambda expressions read the [20 seconds primer](#c-lambda-expression-primer) now.
 
@@ -30,7 +30,7 @@ eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
 }
 ````
 
-After grabbing some arguments the code creates an `AsyncEventEmitter` in (1). It wraps a javascript `EventEmitter` for use on a different thread. In (2) a lambda expression is dipatched to the threadpool. The expression captures copies of `delay`, `iterations` and the `emitter`. This is an ncd pattern: An `AsyncSomething` is first allocated on the main thread and then copied around to different threads. The call to `dispatch(...)` returns immediately and the lambda is launched on the thredpool. In (3) the async event emitter is invoked, sending progress events back to javascript. After the execution finishes the callback passed in (4) is invoked on the main thread. Here we just emit a done event.
+After grabbing some arguments the code creates an `AsyncEventEmitter` in (1). It wraps a javascript `EventEmitter` for use on a different thread. In (2) a lambda expression is dipatched to the thread pool. The expression captures copies of `delay`, `iterations` and the `emitter`. This is an ncd pattern: An `AsyncSomething` is first allocated on the main thread and then copied around to different threads. The call to `dispatch(...)` returns immediately and the lambda is launched on the thread pool. In (3) the async event emitter is invoked, sending progress events back to javascript. After the execution finishes the callback passed in (4) is invoked on the main thread. Here we just emit a done event.
 
 The javascript code looks like this:
 
@@ -85,17 +85,17 @@ Unlike more traditional C++ callback APIs, ncd callbacks don't necessarily have 
 
 #### Lambda Expressions
 
-What about lambda expressions? Isn't that a third kind of callback? Well, yes. You can use lambda expressions as callbacks as shown in the first example. And no, they are not a new kind of callback. What happens is this: The compiler analyzes the lambda to see if it captures any variables. If it does not capture anything the compiler creates a hidden function. Else it creates a hidden class for a callable object. The object has the necessary members to hold the captured values.
+What about lambda expressions? Isn't that a third kind of callback? Well, yes. You can use lambda expressions as callbacks as shown in the first example. And no, they are not a new kind of callback. What happens is this: The compiler analyzes the lambda and checks if it captures any variables. If it does not capture anything the compiler creates a hidden function. Else it creates a hidden class for a callable object. The object has the necessary members to hold the captured values.
 
 The [basic work example](https://github.com/agnat/ncd/tree/master/examples/01.basic_work) covers all three callback flavours.
 
 ### Queues
 
-At the core of ncd are two types of code queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary.
+At the core of ncd are two types of queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary.
 
-`WorkQueue`s run code on the threadpool. Although there currently is only one default work queue, this will become a fully user constructable type. Each work queue has a maximum number of threads it will use in parallel. A queue with a maximum thread count of one will execute all items sequentially. The default queue is very parallel. It uses `UV_THREADPOOL_SIZE - 4` threads, with a minimum of one.
+`WorkQueue`s run code on the thread pool. Although there currently is only one default work queue, this will become a fully user constructable type. Each work queue has a maximum number of threads it will use in parallel. A queue with a maximum thread count of one will execute all items sequentially while queues with more threads execute items concurrently. The default queue uses `UV_THREADPOOL_SIZE` - 4 threads, with a minimum of one. That is, it is a sequential queue until you start to give it more threads by setting `UV_THREADPOOL_SIZE'.
 
-Code executing on the threadpool has access to an instance of `MainQueue`. Code dispatched on this type of queue is executed on the main thread and can use the javascript engine.
+Code executing on the thread pool has access to an instance of `MainQueue`. Code dispatched on this type of queue is executed on the main thread and can use the javascript engine.
 
 ````c++
 std::thread::id threadId() { return std::this_thread::get_id(); }
@@ -114,9 +114,9 @@ workFunction(Nan::FunctionCallbackInfo<Value> const& args) {
 }
 ````
 
-These pairs of queues provide a generic, bidirectional inter-thread facility not unsimilar to apple's grand central dispatch. Both, the apple and the libuv event loop have a notion of a main thread. They both provide a threadpool. However, as the name indicates the similarities only go so far. 
+These pairs of queues provide a generic, bidirectional inter-thread facility not unsimilar to apple's grand central dispatch. Both, the apple and the libuv event loop have a notion of a main thread. They both provide a thread pool. However, as the name suggests the similarities only go so far. 
 
-If you are familiar with libuv programming you already guessed it. Behind the scenes the work queue deals with items of type `uv_work_t`. The main queue handles the other direction and holds a `uv_async_t` that is the backchannel for the current work callback.
+If you are familiar with libuv programming you already guessed it. Behind the scenes the work queue deals with items of type `uv_work_t`. The main queue handles the other direction and holds a `uv_async_t` that is the backchannel for the current work function.
 
 ### Handles
 
@@ -179,3 +179,4 @@ This instructs the compiler to capture all variables we use. In javascript that 
 
 Since this is C++ [the actual details of lambda expressions](http://en.cppreference.com/w/cpp/language/lambda) are quite baroque. Please refer to the wider web for additional tutorials.
 
+[modeline]: # ( vim: set fenc=utf-8 spell spelllang=en_us: )
