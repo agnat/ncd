@@ -46,7 +46,7 @@ workers.eventEmittingWorker(10000, 10, ee)
 
 ### Callbacks
 
-Like node, ncd uses user supplied callbacks alot. The work to be run on the thread and the done handler are callbacks as are the asynchronous request to the main thread. Basically, everything is a callback. Two basic forms of callbacks are supported: Free functions and callable objects:
+Like node, ncd uses user supplied callbacks. Alot. The work to be run on the thread and the done handler are callbacks as are the asynchronous requests to the main thread. Basically, everything is a callback. Two basic forms of callbacks are supported: Free functions and callable objects:
 
 ````c++
 void done() {}
@@ -105,15 +105,19 @@ int minimum = 0;
 auto f = [=](int status) { return status >= minimum; };
 ````
 
-This instructs the compiler to capture all variables we actually use, which is the default in javascript. It will capture them *by copy* and not *by reference*. With ncd the containing function often returns immediately, destroying all local variables. Hence, copying is the right way to go.
+This instructs the compiler to capture all variables we actually use. In javascript that is the default. It will capture them *by copy* and not *by reference*. With ncd the containing function often returns immediately, destroying all local variables. So, copying is the way to go.
 
-Since this is C++ [the actual details of lambda expressions](http://en.cppreference.com/w/cpp/language/lambda) are quite baroque. Please refer to wider web for additional tutorials.
+Since this is C++ [the actual details of lambda expressions](http://en.cppreference.com/w/cpp/language/lambda) are quite baroque. Please refer to the wider web for additional tutorials.
 
 ### Queues
 
-At the core of ncd are two types of code queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary. `WorkQueue`s run code on the threadpool. The executing code in turn has access to an instance of `MainQueue`. Code dispatched on this type of queue executes on the main thread and hence can use the javascript engine.
+At the core of ncd are two types of code queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary.
 
-These pairs of queues provide generic, bidirectional inter-thread communication.
+`WorkQueue`s run code on the threadpool. Although there currently is only one default work queue, this will become a fully user construtable type. Each work queue has a maximum number of threads it will use in parallel. A queue with a maximum thread count of one will execute all items sequentially. The default queue is very parallel. It uses `UV_THREADPOOL_SIZE - 4` threads, with a minimum of one.
+
+Code executing on the threadpool has access to an instance of `MainQueue`. Code dispatched on this type of queue is executed on the main thread and can use the javascript engine.
+
+These pairs of queues provide a generic, bidirectional inter-thread facility not unsimilar to apple's grand central dispatch. 
 
 ## Handles and Functions
 
