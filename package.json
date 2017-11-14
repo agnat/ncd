@@ -1,7 +1,9 @@
 {
   "name": "ncd",
   "version": "0.0.5",
-  "description": "not central dispatch.",
+  "description": "node central dispatch.",
+  "keywords": ["async worker", "async addon", "native addon", "threads",
+               "thread pool", "asynchronous c++ addon", "not central dispatch"],
   "main": "./lib/include_dir.js",
   "scripts": {
     "test": "tap tests/*.js"

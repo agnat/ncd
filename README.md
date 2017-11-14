@@ -81,11 +81,13 @@ doWork(Nan::FunctionCallbackInfo<Value> const& args) {
 
 ````
 
-Unlike more traditional C++ callback APIs, ncd callbacks don't necessarily have a fixed signature. Some of them are very flexible and the user can choose from a number of options. This is documented in the reference. 
+Unlike more traditional C++ callback APIs, ncd callbacks don't necessarily have a fixed signature. Some of them are very flexible and the user can choose from a number of options. This is documented in the reference.
+
+Since ncd is intentionally unspecific about the callback types virtually all C++ callables will work as long as they have a matching signature. This includes callables returned by C++ standard utilities like `std::bind(...)`. In the [appetizer](#appetizer) above an event name is tied to the asynchronous event emitter. The result is directly used as a done handler.
 
 #### Lambda Expressions
 
-What about lambda expressions? Isn't that a third kind of callback? Well, yes. You can use lambda expressions as callbacks as shown in the first example. And no, they are not a new kind of callback. What happens is this: The compiler analyzes the lambda and checks if it captures any variables. If it does not capture anything the compiler creates a hidden function. Else it creates a hidden class for a callable object. The object has the necessary members to hold the captured values.
+What about lambda expressions? Isn't that a third kind of callback? Well, yes. You can use lambda expressions as callbacks as shown in the first example. And no, they are not a new kind of callable. What happens is this: The compiler analyzes the lambda and checks if it captures any variables. If it does not capture anything the compiler creates a hidden function. Else it creates a hidden class for a callable object. The object has the necessary members to hold the captured values.
 
 The [basic work example](https://github.com/agnat/ncd/tree/master/examples/01.basic_work) covers all three callback flavours.
 
@@ -93,7 +95,7 @@ The [basic work example](https://github.com/agnat/ncd/tree/master/examples/01.ba
 
 At the core of ncd are two types of queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary.
 
-`WorkQueue`s run code on the thread pool. Although there currently is only one default work queue, this will become a fully user constructable type. Each work queue has a maximum number of threads it will use in parallel. A queue with a maximum thread count of one will execute all items sequentially while queues with more threads execute items concurrently. The default queue uses `UV_THREADPOOL_SIZE` - 4 threads, with a minimum of one. That is, it is a sequential queue until you start to give it more threads by setting `UV_THREADPOOL_SIZE'.
+`WorkQueue`s run code on the thread pool. Although there currently is only one default work queue, this will become a fully user constructable type. Each work queue has a maximum number of threads it will use in parallel. A queue with a maximum thread count of one will execute all items sequentially while queues with more threads execute items concurrently. The default queue uses `UV_THREADPOOL_SIZE` - 4 threads, with a minimum of one. That is, it is a sequential queue until you start to give it more threads by setting `UV_THREADPOOL_SIZE`.
 
 Code executing on the thread pool has access to an instance of `MainQueue`. Code dispatched on this type of queue is executed on the main thread and can use the javascript engine.
 
