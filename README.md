@@ -123,7 +123,7 @@ If you are familiar with libuv programming you already guessed it. Behind the sc
 #### Queue Invariants
 
  - `WorkQueue`s always _launch_ their work in sequential order
- - `WorkQueue`s with a single thread are strictly sequential. The done callback of the previous item is run before the next item is launched.
+ - `WorkQueue`s with a single thread are strictly sequential. The previous item is finished before the next item is launched.
  - `MainQueue`s are always strictly sequential
  - Additionally, all items dispatched on a `MainQueue` are executed before the done handler.
 
