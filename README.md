@@ -120,6 +120,13 @@ These pairs of queues provide a generic, bidirectional inter-thread facility not
 
 If you are familiar with libuv programming you already guessed it. Behind the scenes the work queue deals with items of type `uv_work_t`. The main queue handles the other direction and holds a `uv_async_t` that is the backchannel for the current work function.
 
+#### Queue Invariants
+
+ - `WorkQueue`s always _launch_ their work in sequential order
+ - `WorkQueue`s with a single thread are strictly sequential. The done callback of the previous item is run before the next item is launched.
+ - `MainQueue`s are always strictly sequential
+ - Additionally, all items dispatched on a `MainQueue` are executed before the done handler.
+
 ### Handles
 
 ncd introduces `AsyncHandle<>`s. These handles are used to keep javascript objects alive while work is executing on a thread. This solves many common housekeeping tasks in an unobtrusive way:
