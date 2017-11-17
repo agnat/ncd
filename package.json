@@ -2,14 +2,25 @@
   "name": "ncd",
   "version": "0.0.5",
   "description": "node central dispatch.",
-  "keywords": ["async worker", "async addon", "native addon", "threads",
-               "thread pool", "asynchronous c++ addon", "not central dispatch"],
+  "keywords": [
+    "async worker",
+    "async addon",
+    "native addon",
+    "threads",
+    "thread pool",
+    "asynchronous c++ addon",
+    "not central dispatch"
+  ],
   "main": "./lib/include_dir.js",
   "scripts": {
     "test": "tap tests/*.js"
   },
   "author": "David Siegel",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agnat/ncd.git"
+  },
   "dependencies": {
     "nan": "^2.7.0"
   }
