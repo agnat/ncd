@@ -120,7 +120,7 @@ private:  // member functions
   push(Callback && callback) {
     NCD_DBMQ("MainQueue::push(...)");
     ScopedLock scopedLock(mQueueLock);
-    mPendingItems.emplace_back(std::make_unique<detail::AsyncRequest>(callback));
+    mPendingItems.emplace_back(make_unique<detail::AsyncRequest>(callback));
     uv_async_send(mHandle);
   }
 

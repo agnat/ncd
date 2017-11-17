@@ -55,7 +55,7 @@ public:  // API
   void
   queue(uv_loop_t * loop) {
     NCD_DBWRK("WorkRequestBase::queue(...)");
-    mMainQueue = std::make_unique<MainQueue>(loop);
+    mMainQueue = make_unique<MainQueue>(loop);
     uv_queue_work(loop, &mWorkHandle, OnWork, OnDone);
   }
 

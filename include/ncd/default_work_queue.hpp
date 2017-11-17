@@ -32,7 +32,7 @@ defaultWorkQueue() {
       }
     }
     threadCount = std::max(1ul, threadCount - defaultThreadCount);
-    sWorkQueue = std::make_unique<WorkQueue>(uv_default_loop(), threadCount);
+    sWorkQueue = make_unique<WorkQueue>(uv_default_loop(), threadCount);
   }
   return *sWorkQueue;
 }
