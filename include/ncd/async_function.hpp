@@ -2,6 +2,8 @@
 #ifndef NCD_ASYNC_FUNCTION_HPP_
 # define NCD_ASYNC_FUNCTION_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <iostream>  // XXX
 # include <v8.h>
 

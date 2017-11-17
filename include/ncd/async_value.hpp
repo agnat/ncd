@@ -2,6 +2,8 @@
 #ifndef NCD_ASYNC_VALUE_HPP_
 # define NCD_ASYNC_VALUE_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <nan.h>
 
 # include <ncd/async_handle.hpp>

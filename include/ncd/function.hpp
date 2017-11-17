@@ -2,6 +2,8 @@
 #ifndef NCD_FUNCTION_HPP_
 # define NCD_FUNCTION_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <nan.h>
 
 # include <ncd/v8_utils.hpp>

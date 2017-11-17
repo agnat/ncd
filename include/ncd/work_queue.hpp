@@ -2,6 +2,8 @@
 #ifndef NCD_WORK_QUEUE_HPP_
 # define NCD_WORK_QUEUE_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <ncd/meta.hpp>
 # include <ncd/uv.hpp>
 # include <ncd/main_queue.hpp>

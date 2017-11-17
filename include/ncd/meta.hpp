@@ -2,6 +2,8 @@
 #ifndef NCD_META_HPP_
 # define NCD_META_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <functional>
 # include <tuple>
 

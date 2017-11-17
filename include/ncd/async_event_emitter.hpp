@@ -2,6 +2,8 @@
 #ifndef NCD_ASYNC_EVENT_EMITTER_HPP_
 # define NCD_ASYNC_EVENT_EMITTER_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <ncd/async_function.hpp>
 
 namespace ncd {

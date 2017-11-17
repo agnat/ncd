@@ -2,6 +2,8 @@
 #ifndef NCD_DEFAULT_WORK_QUEUE_HPP_
 # define NCD_DEFAULT_WORK_QUEUE_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <sstream>
 # include <iostream>  // XXX
 

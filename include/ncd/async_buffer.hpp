@@ -2,6 +2,8 @@
 #ifndef NCD_ASYNC_BUFFER_HPP_
 # define NCD_ASYNC_BUFFER_HPP_
 
+# include <ncd/configuration.hpp>
+
 namespace ncd {
 
 struct AsyncBuffer {};

@@ -2,6 +2,8 @@
 #ifndef NCD_MAIN_QUEUE_HPP_
 # define NCD_MAIN_QUEUE_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <deque>
 # include <functional>
 

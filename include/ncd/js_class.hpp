@@ -2,6 +2,8 @@
 #ifndef NCD_JS_CLASS_HPP_
 # define NCD_JS_CLASS_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <functional>
 
 # include <nan.h>

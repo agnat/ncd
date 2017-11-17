@@ -2,6 +2,8 @@
 #ifndef NCD_UV_HPP
 # define NCD_UV_HPP
 
+# include <ncd/configuration.hpp>
+
 # include <uv.h>
 
 namespace ncd {

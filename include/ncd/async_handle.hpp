@@ -2,6 +2,8 @@
 #ifndef NCD_ASYNC_HANDLE_H_
 # define NCD_ASYNC_HANDLE_H_
 
+# include <ncd/configuration.hpp>
+
 # include <nan.h>
 
 //# define NCD_TRACE_HANDLES

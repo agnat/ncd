@@ -2,6 +2,8 @@
 #ifndef NCD_STREAMS_HPP_
 # define NCD_STREAMS_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <deque>
 # include <iostream> // XX
 

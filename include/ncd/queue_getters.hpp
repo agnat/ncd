@@ -2,6 +2,8 @@
 #ifndef NCD_QUEUE_GETTERS_HPP_
 # define NCD_QUEUE_GETTERS_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <ncd/uv.hpp>
 # include <ncd/main_queue.hpp>
 

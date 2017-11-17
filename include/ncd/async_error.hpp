@@ -2,7 +2,9 @@
 #ifndef NCD_ASYNC_ERROR_HPP_
 # define NCD_ASYNC_ERROR_HPP_
 
-#include <string>
+# include <ncd/configuration.hpp>
+
+# include <string>
 
 namespace ncd {
 

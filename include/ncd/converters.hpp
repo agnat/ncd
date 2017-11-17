@@ -2,6 +2,8 @@
 #ifndef NCD_CONVERTERS_HPP_
 # define NCD_CONVERTERS_HPP_
 
+# include <ncd/configuration.hpp>
+
 # include <iostream>  // XXX
 
 # include <ncd/async_error.hpp>
