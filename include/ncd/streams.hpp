@@ -58,10 +58,10 @@ private:
 };
 
 template <typename Stream>
-class AsyncStream {
+class AsyncStreamHandle {
 public:
   explicit
-  AsyncStream(v8::Local<v8::Object> jsStream) 
+  AsyncStreamHandle(v8::Local<v8::Object> jsStream) 
     : mJSStream(jsStream), mStream(*Stream::unwrap(jsStream))
   {}
 
@@ -76,7 +76,7 @@ private:
 template <typename Stream>
 class AsyncReader {
 public:
-  AsyncReader(AsyncStream<Stream> const& stream)
+  AsyncReader(AsyncStreamHandle<Stream> const& stream)
     : mStream(stream.stream())
   {}
   using ValueType = typename Stream::ValueType;
@@ -97,7 +97,7 @@ public:  // types
   using ValueType = AsyncValue<T, Converters>;
   using Self = WritableStream<T, Converters>;
   using Base = StreamBase<ValueType, Self>;
-  using AsyncStream = AsyncStream<Self>;
+  using AsyncStream = AsyncStreamHandle<Self>;
   using AsyncEndpoint = AsyncReader<Self>;
 
 public:
