@@ -4,7 +4,7 @@
 # include <memory>
 
 # if __cplusplus < 201103L
-#  error "ncd requires C++11 or better
+#  error ncd requires C++11 or better
 # endif
 
 namespace ncd {
