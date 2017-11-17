@@ -8,7 +8,6 @@
 
 namespace {
 
-using namespace std::string_literals;
 using v8::Local;
 using v8::Value;
 using v8::Object;
@@ -49,10 +48,10 @@ eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
 
   ncd::defaultWorkQueue().dispatch([=](){
     for (unsigned i = 0; i < iterations; ++i) {
-      emitter.emit("progress"s, i);
+      emitter.emit("progress", i);
       usleep(delay);
     }
-  }, std::bind(emitter.emit, "done"s));
+  }, std::bind(emitter.emit, "done"));
 }
 
 //============================================================================
@@ -70,7 +69,7 @@ public:
   void
   operator()() {
     for (unsigned i = 0; i < mIterations; ++i) {
-      mEmit("progress"s, i);
+      mEmit("progress", i);
       usleep(mDelay);
     }
   }
@@ -91,7 +90,7 @@ workerComponent(Nan::FunctionCallbackInfo<Value> const& args) {
 
   std::cerr << "dispatch on thread " << threadId() << std::endl;
   ncd::defaultWorkQueue().dispatch(WorkerComponent(delay, iterations, emitter),
-                                   std::bind(emit, "done"s));
+                                   std::bind(emit, "done"));
 }
 
 //=== Init ===================================================================

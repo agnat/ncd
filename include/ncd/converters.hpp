@@ -110,6 +110,12 @@ struct ConvenientConverters {
     return detail::toLocalChecked(Nan::New(value));
   }
 
+  static
+  v8::Local<v8::Value>
+  toJS(char const* value) {
+    return toJS(std::string(value));
+  }
+
   template <typename T>
   using JSType = detail::SelectJSType<T>;
 

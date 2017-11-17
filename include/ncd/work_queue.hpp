@@ -285,7 +285,7 @@ private:  // member functions
       typename detail::callable_signature<Work>::type,
       DefaultReturnPolicy
     >;
-    mPendingWork.emplace_back(std::make_unique<Request>(work, *this, done));
+    mPendingWork.emplace_back(make_unique<Request>(work, *this, done));
     scheduleWork();
   }
   
