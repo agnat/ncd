@@ -2,9 +2,9 @@
 
 # ncd – not central dispatch
 
-ncd is a library to support asynchronous C++ node addons. It provides a number of primitives to work with the UV thread pool. The library uses semantics familiar to every node developer. It allows for a very casual coding style while still facilitating the development of reusable components.
+_ncd_ is a library to support asynchronous C++ node addons. It provides a number of primitives to work with the UV thread pool. The library uses semantics familiar to every node developer. It allows for a very casual coding style while still facilitating the development of reusable components.
 
-The core principle of ncd is: Pass code, not data. The user dispatches code to run on the pool or the main thread respectively. The user can choose from plain functions, callable objects or lambda expressions. Anything [callable](http://en.cppreference.com/w/cpp/concept/Callable) will work.
+The core principle of _ncd_ is: Pass code, not data. The user dispatches code to run on the pool or the main thread respectively. The user can choose from plain functions, callable objects or lambda expressions. Anything [callable](http://en.cppreference.com/w/cpp/concept/Callable) will work.
 
 If you are unfamiliar with lambda expressions read the [20 seconds primer](#c-lambda-expression-primer) now.
 
@@ -15,7 +15,6 @@ Let's take a look at a first example, the implementation of a simple worker:
 ````c++
 void
 eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
-  using namespace std::string_literals;
   unsigned delay      = args[0]->Uint32Value();
   unsigned iterations = args[1]->Uint32Value();
 
@@ -23,14 +22,14 @@ eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
 
   ncd::defaultWorkQueue().dispatch([=](){                    // ②
     for (unsigned i = 0; i < iterations; ++i) {
-      emitter.emit("progress"s, i);                          // ③
+      emitter.emit("progress", i);                           // ③
       usleep(delay);
     }
-  }, std::bind(emitter.emit, "done"s));                      // ④
+  }, std::bind(emitter.emit, "done"));                       // ④
 }
 ````
 
-After grabbing some arguments the code creates an `AsyncEventEmitter` in (1). It wraps a javascript `EventEmitter` for use on a different thread. In (2) a lambda expression is dipatched to the thread pool. The expression captures copies of `delay`, `iterations` and the `emitter`. This is an ncd pattern: An `AsyncSomething` is first allocated on the main thread and then copied around to different threads. The call to `dispatch(...)` returns immediately and the lambda is launched on the thread pool. In (3) the async event emitter is invoked, sending progress events back to javascript. After the execution finishes the callback passed in (4) is invoked on the main thread. Here we just emit a done event.
+After grabbing some arguments the code creates an `AsyncEventEmitter` in (1). It wraps a javascript `EventEmitter` for use on a different thread. In (2) a lambda expression is dipatched to the thread pool. The expression captures copies of `delay`, `iterations` and the `emitter`. This is an _ncd_ pattern: An `AsyncSomething` is first allocated on the main thread and then copied around to different threads. The call to `dispatch(...)` returns immediately and the lambda is launched on the thread pool. In (3) the async event emitter is invoked, sending progress events back to javascript. After the execution finishes the callback passed in (4) is invoked on the main thread. Here we just emit a done event.
 
 The javascript code looks like this:
 
@@ -48,7 +47,7 @@ workers.eventEmittingWorker(10000, 10, ee)
 
 ### Callbacks
 
-Like node, ncd uses callbacks. Alot. The code to be run on the thread and the done handler are callbacks as are the asynchronous requests to the main thread. Basically, everything is a callback. Two basic forms of callbacks are supported: Free functions and callable objects:
+Like node, _ncd_ uses callbacks. Alot. The code to be run on the thread and the done handler are callbacks as are the asynchronous requests to the main thread. Basically, everything is a callback. Two basic forms of callbacks are supported: Free functions and callable objects:
 
 ````c++
 void done() {}
@@ -81,9 +80,9 @@ doWork(Nan::FunctionCallbackInfo<Value> const& args) {
 
 ````
 
-Unlike more traditional C++ callback APIs, ncd callbacks don't necessarily have a fixed signature. Some of them are very flexible and the user can choose from a number of options. This is documented in the reference.
+Unlike more traditional C++ callback APIs, _ncd_ callbacks don't necessarily have a fixed signature. Some of them are very flexible and the user can choose from a number of options. This is documented in the reference.
 
-Since ncd is intentionally unspecific about the callback types virtually all C++ callables will work as long as they have a matching signature. This includes callables returned by C++ standard utilities like `std::bind(...)`. In the [appetizer](#appetizer) above an event name is tied to the asynchronous event emitter. The result is directly used as a done handler.
+Since _ncd_ is intentionally unspecific about the callback types virtually all C++ callables will work as long as they have a matching signature. This includes callables returned by C++ standard utilities like `std::bind(...)`. In the [appetizer](#appetizer) above an event name is tied to the asynchronous event emitter. The result is directly used as a done handler.
 
 #### Lambda Expressions
 
@@ -93,7 +92,7 @@ The [basic work example](https://github.com/agnat/ncd/tree/master/examples/01.ba
 
 ### Queues
 
-At the core of ncd are two types of queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary.
+At the core of _ncd_ are two types of queues. The user dispatches code to a queue and the code is executed on the other side of a thread boundary.
 
 `WorkQueue`s run code on the thread pool. Although there currently is only one default work queue, this will become a fully user constructable type. Each work queue has a maximum number of threads it will use in parallel. A queue with a maximum thread count of one will execute all items sequentially while queues with more threads execute items concurrently. The default queue uses `UV_THREADPOOL_SIZE` - 4 threads, with a minimum of one. That is, it is a sequential queue until you start to give it more threads by setting `UV_THREADPOOL_SIZE`.
 
@@ -129,7 +128,7 @@ If you are familiar with libuv programming you already guessed it. Behind the sc
 
 ### Handles
 
-ncd introduces `AsyncHandle<>`s. These handles are used to keep javascript objects alive while work is executing on a thread. This solves many common housekeeping tasks in an unobtrusive way:
+_ncd_ introduces `AsyncHandle<>`s. These handles are used to keep javascript objects alive while work is executing on a thread. This solves many common housekeeping tasks in an unobtrusive way:
 
 ````c++
 void
@@ -177,15 +176,49 @@ auto f = [](int status) { return status >= 0; };
 f(5);
 ````
 
-We traded an arrow for a pair of brackets, but the similarities are obvious, right? The currently empty brackets are used to control what variables are captured and how. The ncd examples most commonly use a capture list that consists of a single equal sign:
+We traded an arrow for a pair of brackets, but the similarities are obvious, right? The currently empty brackets are used to tell the compiler what variables are captured and how. It is called the _capture list_. The examples most commonly use a capture list that consists of a single equal sign:
 
 ````c++
 int minimum = 0;
 auto f = [=](int status) { return status >= minimum; };
 ````
 
-This instructs the compiler to capture all variables we use. In javascript that is the default. It will capture them *by copy* and not *by reference*. The lambda above holds a copy of `minimum`. With ncd the containing function often returns immediately, destroying all local variables. So, copying is the way to go.
+This instructs the compiler to capture all variables we use. In javascript that is the default. It will capture them *by copy* and not *by reference*. The lambda above holds a copy of `minimum`. With _ncd_ the containing function often returns immediately, destroying all local variables. So, copying is the way to go.
 
 Since this is C++ [the actual details of lambda expressions](http://en.cppreference.com/w/cpp/language/lambda) are quite baroque. Please refer to the wider web for additional tutorials.
+
+### Design Notes
+
+_ncd_ hides many of the more daunting details of libuv/C++ multi-threading. It employs C++ best practices to arrive at an API that feels familiar to node/javascript developers. The goal here is to be as javascripty as possible _without_ creating awkward C++ or (unwarrented) overhead. It aims to be a semantic fusion without bending things to far.
+
+  1. By using C++ callables as the core abstraction, we gain flexibility. Mixing and matching free functions, callable objects and lambda expressions gives us a semantic reach similar to javascript functions. We can keep state, use inline syntax and capture variables. _ncd_ also follows nodes signature for callbacks: error first, result second.
+  1. _ncd_ tries to avoid burdening the user with housekeeping tasks. It mostly uses automatic RAII-style memory management. In general it avoids user-facing symmetries like new/delete, lock/unlock, &c. Anything the user has to remember is bad, because we tend to forget.
+  1. _ncd_ directly implements a number of high level components from the node universe, event emitters and streams and makes them available to multi-threaded addons. The hope is that reusing these familiar async primitives will make it easier to reason about these addons.
+
+#### Code Walkthrough
+
+_ncd_ core consists of three basic primitives: `WorkQueue`, `MainQueue`, and `AsyncHandle`. Everything else is either standalone or build on top of the core. 
+
+##### Main Queue
+
+A natural place to start reading is _work_queue.hpp_. The queue files each contain the actual queue class like `WorkQueue` and the items managed by that queue: `WorkRequestBase` and the derieved template `WorkRequest<...>. This is an interesting (albeit not new) pattern. A template derieves from an abstract base class filling in the pure virtual functions:
+
+````c++
+struct Base {
+  virtual ~Base() {}
+  virtual void doThing() = 0;
+};
+
+template <typename Callable>
+struct Derieved : Base {
+  void doThing() override { /* do things depending on Callable */ }
+};
+````
+
+Note how this is similar to the current `AsyncWorker`. Except that from the users point of view the derieved type is _automatically generated_ to fit the callable. Think of the pattern as a polymorphic factory. Given this setup, we can stuff pointers to the base class into standard containers and do things with them without knowing about the actual callable.
+
+##### Work Queue
+
+The class `WorkRequestBase` manages the `MainQueue` for a given work function. Looking through _main_queue.hpp_ you'll see it's much less complex and uses a similar pattern like the `WorkQueue`. 
 
 [modeline]: # ( vim: set fenc=utf-8 spell spelllang=en_us: )

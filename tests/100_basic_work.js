@@ -8,7 +8,7 @@ tap.test(function (t) {
     delay = 0
   t.plan(testItems + 1)
   basic_work.testWorkQueue(testItems, delay, () => { 
-    t.pass("done called")
+    t.pass("done callback called after work")
     if (++doneCount == testItems) {
       setTimeout(() => {
         t.ok(doneCount == testItems)
@@ -17,7 +17,6 @@ tap.test(function (t) {
     }
   })
 })
-
 
 tap.test(function (t) {
   var doneCount = 0,
@@ -25,7 +24,7 @@ tap.test(function (t) {
     delay = 1
   t.plan(testItems + 1)
   basic_work.testWorkQueue(testItems, delay, () => { 
-    t.pass("done called")
+    t.pass("done callback called after work")
     if (++doneCount == testItems) {
       setTimeout(() => {
         t.ok(doneCount == testItems)
@@ -34,5 +33,4 @@ tap.test(function (t) {
     }
   })
 })
-
 

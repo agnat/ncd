@@ -22,7 +22,10 @@ function gyp_build(t, directory, done) {
       opts.stdio = 'inherit'
       args.push('--verbose')
     }
-    cp.spawn(gyp, args, opts).on('close', (code) => { t.equal(code, 0); done(null, directory) })
+    cp.spawn(gyp, args, opts).on('close', (code) => {
+      t.equal(code, 0, "building addon succeeded");
+      done(null, directory)
+    })
   });
 }
 
@@ -32,8 +35,13 @@ tap.test("build test addons", function (t) {
 })
 
 tap.test("build and run example addons", function (t) {
-  var testCount = 0, doneCount = 0,
-    run, done = (code) => { t.equal(code, 0); if (++doneCount == testCount) t.end() }
+  var testCount = 0,
+      doneCount = 0,
+      run, 
+      done = (code) => { 
+        t.equal(code, 0, "running example succeeded");
+        if (++doneCount == testCount) t.end()
+      }
   for (var dir in examples) {
     testCount += examples[dir].length
     run = (error, dir) => {
