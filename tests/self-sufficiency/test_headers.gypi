@@ -1,9 +1,4 @@
-{ "target_defaults": {
-    "cflags": [ "-Wall", "-Wextra", "-Wno-unused_parameter" ]
-  , "defines": [ "V8_DEPRECATION_WARNINGS=1" ]
-  , "include_dirs": [ "<!(node -e \"require('nan')\")", "<!(node -e \"require('../..')\")" ]
-  }
-, "targets": [
+{"targets": [
     {"target_name": "async_buffer_hpp",        "sources": ["async_buffer_hpp.cpp"]}
   , {"target_name": "async_error_hpp",         "sources": ["async_error_hpp.cpp"]}
   , {"target_name": "async_event_emitter_hpp", "sources": ["async_event_emitter_hpp.cpp"]}
