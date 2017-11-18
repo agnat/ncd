@@ -13,7 +13,7 @@
   ],
   "main": "./lib/include_dir.js",
   "scripts": {
-    "test": "tap -b tests/*.js && UV_THREADPOOL_SIZE=16 tap -b tests/*.js"
+    "test": "make test"
   },
   "author": "David Siegel",
   "license": "MIT",
@@ -22,6 +22,7 @@
     "url": "https://github.com/agnat/ncd.git"
   },
   "devDependencies": {
+    "glob": "^7.1.2",
     "nan": "^2.7.0",
     "node-gyp": "^3.6.2",
     "tap": "^10.7.3"

@@ -13,10 +13,11 @@ testWorkQueue(Nan::FunctionCallbackInfo<v8::Value> const& args) {
   
   for (unsigned i = 0; i < items; ++i) {
     ncd::defaultWorkQueue().dispatch([=](){
-      usleep(delay * 1000);
+      if (delay != 0) {
+        usleep(delay * 1000);
+      }
     }, args[2].As<v8::Function>());
   }
-  
 }
 
 void
