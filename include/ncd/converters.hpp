@@ -113,7 +113,11 @@ struct ConvenientConverters {
   static
   v8::Local<v8::Value>
   toJS(char const* value) {
-    return toJS(std::string(value));
+    if (value) {
+      return toJS(std::string(value));
+    } else {
+      return Nan::Null();
+    }
   }
 
   template <typename T>

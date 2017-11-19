@@ -57,7 +57,12 @@ doubleFailedWork(ncd::AsyncError** error) {
 }
 
 void
-done_double(ncd::AsyncError* error, double const& result) {
+done_double(double const& result) {
+  std::cerr << "done result: " << result << std::endl;
+}
+
+void
+done_double_with_error(ncd::AsyncError* error, double const& result) {
   if (error) {
     std::cerr << "done error: " << error << std::endl;
     delete error;
@@ -77,7 +82,7 @@ workWithError(Nan::FunctionCallbackInfo<Value> const& args) {
   ncd::defaultWorkQueue().dispatch([](){ return new ncd::AsyncError();}, done);
 
   ncd::defaultWorkQueue().dispatch(doubleWork, done_double);
-  ncd::defaultWorkQueue().dispatch(doubleFailedWork, done_double);
+  ncd::defaultWorkQueue().dispatch(doubleFailedWork, done_double_with_error);
 }
 
 //=== Init ===================================================================

@@ -154,7 +154,7 @@ struct WorkResultHandler<void(typename ReturnPolicy::ErrorType**), ReturnPolicy>
 
 template <typename R, typename ReturnPolicy>
 struct WorkResultHandler<R(), ReturnPolicy> {
-  using CallbackSig = void(typename ReturnPolicy::ErrorType*, R const&);
+  using CallbackSig = void(R const&);
 
   template <typename W>
   void
@@ -162,7 +162,7 @@ struct WorkResultHandler<R(), ReturnPolicy> {
 
   template <typename CB>
   void
-  invokeDone(CB & done) { done(nullptr, mResult); }
+  invokeDone(CB & done) { done(mResult); }
 
   R mResult;
 };
