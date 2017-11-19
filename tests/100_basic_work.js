@@ -54,19 +54,16 @@ tap.test((t) => {
   var count = 50000, done = 0
   t.plan(2 * count)
   function handler(success) {
-    if (success) {
-      return (error, result) => {
+    return (error, result) => {
+      if (success) {
         t.equal(error, null)
         t.equal(result, "This is fine.")
-        if (++done == count) { t.end() }
-      } 
-    } else {
-      return (error, result) => {
+      } else {
         t.equal(error.message, "Kaputt.")
         t.equal(result, null)
-        if (++done == count) { t.end() }
       }
-    }
+      if (++done == count) { t.end() }
+    } 
   }
   for (var i = 0; i < count; ++i) {
     var succeed = Math.random() < 0.5

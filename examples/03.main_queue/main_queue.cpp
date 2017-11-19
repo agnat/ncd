@@ -19,9 +19,9 @@ std::thread::id threadId() { return std::this_thread::get_id(); }
 void
 mainQueueCallbacks(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch([](){
+  dispatch(ncd::defaultWorkQueue(), [](){
     std::cerr << "work on thread " << threadId() << std::endl;
-    ncd::mainQueue().dispatch([](){
+    dispatch(ncd::mainQueue(), [](){
       std::cerr << "main queue thread " << threadId() << std::endl;
     });
   }, [](){ std::cerr << "done" << std::endl; });
@@ -32,10 +32,10 @@ pinnedObject(Nan::FunctionCallbackInfo<Value> const& args) {
   Nan::HandleScope scope;
   ncd::AsyncHandle<v8::Object> pinnedObject(args[0].As<v8::Object>());
   
-  ncd::defaultWorkQueue().dispatch([=](){
+  dispatch(ncd::defaultWorkQueue(), [=](){
     for (unsigned i = 0; i < 10; ++i) {
       usleep(10000);
-      ncd::mainQueue().dispatch([=](){
+      dispatch(ncd::mainQueue(), [=](){
         Nan::HandleScope scope;
         v8::Local<v8::Object> object = pinnedObject.jsValue();
         object->Set(Nan::New("progress").ToLocalChecked(), Nan::New(i));

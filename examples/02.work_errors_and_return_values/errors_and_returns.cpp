@@ -74,15 +74,15 @@ done_double_with_error(ncd::AsyncError* error, double const& result) {
 void
 workWithError(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch(work_return_ok, done);
-  ncd::defaultWorkQueue().dispatch(work_return_error, done);
-  ncd::defaultWorkQueue().dispatch(work_outparam_ok, done);
-  ncd::defaultWorkQueue().dispatch(work_outparam_error, done);
-  
-  ncd::defaultWorkQueue().dispatch([](){ return new ncd::AsyncError();}, done);
+  dispatch(ncd::defaultWorkQueue(), work_return_ok, done);
+  dispatch(ncd::defaultWorkQueue(), work_return_error, done);
+  dispatch(ncd::defaultWorkQueue(), work_outparam_ok, done);
+  dispatch(ncd::defaultWorkQueue(), work_outparam_error, done);
 
-  ncd::defaultWorkQueue().dispatch(doubleWork, done_double);
-  ncd::defaultWorkQueue().dispatch(doubleFailedWork, done_double_with_error);
+  dispatch(ncd::defaultWorkQueue(), [](){ return new ncd::AsyncError();}, done);
+
+  dispatch(ncd::defaultWorkQueue(), doubleWork, done_double);
+  dispatch(ncd::defaultWorkQueue(), doubleFailedWork, done_double_with_error);
 }
 
 //=== Init ===================================================================

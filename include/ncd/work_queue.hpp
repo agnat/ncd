@@ -251,6 +251,7 @@ public:  // constructors & destructor
   }
 # endif
 
+# if 0
   template <typename Work, typename Callback>
   void
   dispatch(Work && work, Callback && done) {
@@ -262,19 +263,7 @@ public:  // constructors & destructor
   dispatch(Work && work, v8::Local<v8::Function> done) {
     push(work, done);
   }
-
-protected: friend detail::WorkRequestBase;
-  void
-  doneWith(detail::WorkRequestBase * work) {
-    NCD_DBWQ("WorkQueue::doneWith(...)");
-    ScopedLock scopedLock(mQueueLock);
-    WorkSet::iterator it = find_if(mCurrentWork.begin(), mCurrentWork.end(),
-        [&](WorkPtr const& w) { return w.get() == work; });
-    mCurrentWork.erase(it);
-    scheduleWork();
-  }
-
-private:  // member functions
+# endif
 
   template <typename Work, typename Callback>
   void
@@ -289,6 +278,19 @@ private:  // member functions
     scheduleWork();
   }
   
+protected: friend detail::WorkRequestBase;
+  void
+  doneWith(detail::WorkRequestBase * work) {
+    NCD_DBWQ("WorkQueue::doneWith(...)");
+    ScopedLock scopedLock(mQueueLock);
+    WorkSet::iterator it = find_if(mCurrentWork.begin(), mCurrentWork.end(),
+        [&](WorkPtr const& w) { return w.get() == work; });
+    mCurrentWork.erase(it);
+    scheduleWork();
+  }
+
+private:  // member functions
+
   void  // callers are required to hold the queue lock
   scheduleWork() {
     while (mCurrentWork.size() < mThreadCount && ! mPendingWork.empty()) {

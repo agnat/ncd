@@ -26,7 +26,7 @@ void done() { std::cerr << "done on thread " << threadId() << std::endl; }
 void
 workFunction(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch(work, done);
+  dispatch(ncd::defaultWorkQueue(), work, done);
 }
 
 //=============================================================================
@@ -50,7 +50,7 @@ struct Work {
 
 void workObject(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch(Work(7), done);
+  dispatch(ncd::defaultWorkQueue(), Work(7), done);
 }
 
 //=============================================================================
@@ -59,7 +59,7 @@ void workObject(Nan::FunctionCallbackInfo<Value> const& args) {
 
 void workLambda(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch([](){
+  dispatch(ncd::defaultWorkQueue(), [](){
     std::cerr << "work on thread " << threadId() << std::endl;
   }, done);
 }

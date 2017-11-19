@@ -27,7 +27,7 @@ inlineWorker(Nan::FunctionCallbackInfo<Value> const& args) {
   v8::Local<v8::Function> done = args[3].As<v8::Function>();
 
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch([=](){
+  dispatch(ncd::defaultWorkQueue(), [=](){
     for (unsigned i = 0; i < iterations; ++i) {
       progress(i);
       usleep(delay);
@@ -46,7 +46,7 @@ eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
   ncd::AsyncEventEmitter emitter(args[2].As<v8::Object>());
   std::cerr << "dispatch on thread " << threadId() << std::endl;
 
-  ncd::defaultWorkQueue().dispatch([=](){
+  dispatch(ncd::defaultWorkQueue(), [=](){
     for (unsigned i = 0; i < iterations; ++i) {
       emitter.emit("progress", i);
       usleep(delay);
@@ -89,8 +89,9 @@ workerComponent(Nan::FunctionCallbackInfo<Value> const& args) {
   ncd::Function<> emit(emit_, emitter);
 
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch(WorkerComponent(delay, iterations, emitter),
-                                   std::bind(emit, "done"));
+  dispatch(ncd::defaultWorkQueue(),
+      WorkerComponent(delay, iterations, emitter),
+      std::bind(emit, "done"));
 }
 
 //=== Init ===================================================================

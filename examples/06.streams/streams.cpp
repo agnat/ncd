@@ -23,7 +23,7 @@ makeWriteStream(Nan::FunctionCallbackInfo<Value> const& args) {
   v8::Local<v8::Object> ws = WriteStream::New(options);
 
   WriteStream::AsyncStream stream_(ws);
-  ncd::defaultWorkQueue().dispatch([=](){
+  dispatch(ncd::defaultWorkQueue(), [=](){
     std::cerr << "reader " << std::endl;
     WriteStream::AsyncEndpoint stream(stream_);
     while (ncd::AsyncValue<double> v = stream.readSync()) {

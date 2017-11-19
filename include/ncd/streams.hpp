@@ -120,7 +120,7 @@ public:
     bool queueWasFull;
     ValueType result = readSync(queueWasFull);
     if (queueWasFull || ! result) {
-      mainQueue().dispatch([this]() { mCallback(); });
+      dispatch(mainQueue(), [this]() { mCallback(); });
     }
     return result;
   }

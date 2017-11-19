@@ -7,6 +7,7 @@
 
 # include <ncd/main_queue.hpp>
 # include <ncd/work_queue.hpp>
+# include <ncd/dispatch.hpp>
 
 # include <ncd/default_work_queue.hpp>
 # include <ncd/queue_getters.hpp>

@@ -20,7 +20,7 @@ eventEmittingWorker(Nan::FunctionCallbackInfo<Value> const& args) {
 
   ncd::AsyncEventEmitter emitter(args[2].As<v8::Object>());  // ①
 
-  ncd::defaultWorkQueue().dispatch([=](){                    // ②
+  dispatch(ncd::defaultWorkQueue(), [=](){                   // ②
     for (unsigned i = 0; i < iterations; ++i) {
       emitter.emit("progress", i);                           // ③
       usleep(delay);
@@ -59,8 +59,8 @@ struct CallableObject {
 
 void
 doWork(Nan::FunctionCallbackInfo<Value> const& args) {
-  ncd::defaultWorkQueue().dispatch(free_function, done);
-  ncd::defaultWorkQueue().dispatch(CallableObject(), done);
+  dispatch(ncd::defaultWorkQueue(), free_function, done);
+  dispatch(ncd::defaultWorkQueue(), CallableObject(), done);
 }
 ````
 
@@ -75,7 +75,7 @@ struct WorkWithParam {
 
 void
 doWork(Nan::FunctionCallbackInfo<Value> const& args) {
-  ncd::defaultWorkQueue().dispatch(WorkWithParam(5), done);
+  dispatch(ncd::defaultWorkQueue(), WorkWithParam(5), done);
 }
 
 ````
@@ -105,10 +105,10 @@ void
 workFunction(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "main thread " << threadId() << std::endl;
   
-  ncd::defaultWorkQueue().dispatch([](){
+  dispatch(ncd::defaultWorkQueue(), [](){
     std::cerr << "pool thread " << threadId() << std::endl;
   
-    ncd::mainQueue().dispatch([](){
+    dispatch(ncd::mainQueue(), [](){
       std::cerr << "main thread " << threadId() << std::endl;
     });
   }, done);
@@ -135,10 +135,10 @@ void
 workFunction(Nan::FunctionCallbackInfo<Value> const& args) {
   ncd::AsyncHandle<v8::Object> pinnedObject(args[0].As<v8::Object>());  // ①
   
-  ncd::defaultWorkQueue().dispatch([=](){                               // ②
+  dispatch(ncd::defaultWorkQueue(), [=](){                              // ②
     for (unsigned i = 0; i < 10; ++i) {
       usleep(10000);
-      ncd::mainQueue().dispatch([=](){                                  // ③
+      dispatch(ncd::mainQueue(), [=](){                                 // ③
         Nan::HandleScope scope;
         v8::Local<v8::Object> object = pinnedObject.jsValue();          // ④
         object->Set(Nan::New("progress").ToLocalChecked(), Nan::New(i));

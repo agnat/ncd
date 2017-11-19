@@ -19,11 +19,11 @@ std::thread::id threadId() { return std::this_thread::get_id(); }
 void
 jsDoneHandlers(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
-  ncd::defaultWorkQueue().dispatch([](){}, args[0].As<v8::Function>());
+  dispatch(ncd::defaultWorkQueue(), [](){}, args[0].As<v8::Function>());
 
-  ncd::defaultWorkQueue().dispatch([](){ return 5.0; }, args[0].As<v8::Function>());
+  dispatch(ncd::defaultWorkQueue(), [](){ return 5.0; }, args[0].As<v8::Function>());
 
-  ncd::defaultWorkQueue().dispatch([](ncd::AsyncError ** error){
+  dispatch(ncd::defaultWorkQueue(), [](ncd::AsyncError ** error){
     *error = new ncd::AsyncError("Kaputt");
     return 0.0;
   }, args[0].As<v8::Function>());
@@ -36,7 +36,7 @@ asyncFunctions(Nan::FunctionCallbackInfo<Value> const& args) {
   std::cerr << "dispatch on thread " << threadId() << std::endl;
   ncd::AsyncFunction<> callback(args[0].As<v8::Function>());
 
-  ncd::defaultWorkQueue().dispatch([=](){
+  dispatch(ncd::defaultWorkQueue(), [=](){
     callback(0, 1, 2, 3, 4);
   }, args[1].As<v8::Function>());
 }

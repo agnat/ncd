@@ -39,7 +39,7 @@ protected:
       (*mFunctionHandle)(args...);
     } else {
       auto f = mFunctionHandle;
-      mainQueue().dispatch([=](){ (*f)(args...); });
+      dispatch(mainQueue(), [=](){ (*f)(args...); });
     }
   }
 private:

@@ -59,7 +59,7 @@ private:
   std::function<void()> mHandler;
 };
 
-#undef NCD_DBASN
+# undef NCD_DBASN
 
 class WorkRequestBase;
 
@@ -82,10 +82,21 @@ public:  // constructors & destructor
   }
 
 public:  // API
+# if 0
   template <typename Callback>
   void
   dispatch(Callback && callback) {
     push(callback);
+  }
+# endif
+
+  template <typename Callback>
+  void
+  push(Callback && callback) {
+    NCD_DBMQ("MainQueue::push(...)");
+    ScopedLock scopedLock(mQueueLock);
+    mPendingItems.emplace_back(make_unique<detail::AsyncRequest>(callback));
+    uv_async_send(mHandle);
   }
 
 private: friend detail::WorkRequestBase;
@@ -114,16 +125,6 @@ private:  // event handlers
   void
   OnClose(uv_handle_t * handle) { delete handle; }
   
-private:  // member functions
-  template <typename Callback>
-  void
-  push(Callback && callback) {
-    NCD_DBMQ("MainQueue::push(...)");
-    ScopedLock scopedLock(mQueueLock);
-    mPendingItems.emplace_back(make_unique<detail::AsyncRequest>(callback));
-    uv_async_send(mHandle);
-  }
-
 private:  // data members
   using QueueType = std::deque<AsyncRequestPtr>;
   Mutex    mQueueLock;

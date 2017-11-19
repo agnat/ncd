@@ -12,7 +12,7 @@ testWorkQueue(Nan::FunctionCallbackInfo<v8::Value> const& args) {
   unsigned delay = args[1]->Uint32Value();
   
   for (unsigned i = 0; i < items; ++i) {
-    ncd::defaultWorkQueue().dispatch([=](){
+    dispatch(ncd::defaultWorkQueue(), [=](){
       if (delay != 0) {
         usleep(delay * 1000);
       }
@@ -22,18 +22,22 @@ testWorkQueue(Nan::FunctionCallbackInfo<v8::Value> const& args) {
 
 void
 testStringResult(Nan::FunctionCallbackInfo<v8::Value> const& args) {
-  ncd::defaultWorkQueue().dispatch([=](){ return "This is fine."; }, args[0].As<v8::Function>());
+  dispatch(ncd::defaultWorkQueue(),
+      [=](){ return "This is fine."; },
+      args[0].As<v8::Function>());
 }
 
 void
 testDoubleResult(Nan::FunctionCallbackInfo<v8::Value> const& args) {
-  ncd::defaultWorkQueue().dispatch([=](){ return 0.5; }, args[0].As<v8::Function>());
+  dispatch(ncd::defaultWorkQueue(),
+      [=](){ return 0.5; },
+      args[0].As<v8::Function>());
 }
 
 void
 testStringOrError(Nan::FunctionCallbackInfo<v8::Value> const& args) {
   bool succeed = args[0]->ToBoolean()->Value();
-  ncd::defaultWorkQueue().dispatch([=](ncd::AsyncError ** error) {
+  dispatch(ncd::defaultWorkQueue(), [=](ncd::AsyncError ** error) {
     if (succeed) {
       return "This is fine.";
     } else {
