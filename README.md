@@ -201,7 +201,7 @@ _ncd_ core consists of three basic primitives: `WorkQueue`, `MainQueue`, and `As
 
 ##### Main Queue
 
-A natural place to start reading is _work_queue.hpp_. The queue files each contain the actual queue class like `WorkQueue` and the items managed by that queue: `WorkRequestBase` and the derieved template `WorkRequest<...>. This is an interesting (albeit not new) pattern. A template derieves from an abstract base class filling in the pure virtual functions:
+A natural place to start reading is _work_queue.hpp_. The queue files each contain the actual queue class like `WorkQueue` and the items managed by that queue: `WorkRequestBase` and the derieved template `WorkRequest<...>`. This is an interesting (albeit not new) pattern. A template derieves from an abstract base class filling in the pure virtual functions:
 
 ````c++
 struct Base {
