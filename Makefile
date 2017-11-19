@@ -3,6 +3,7 @@ tap := $(root_dir)/node_modules/.bin/tap
 eslint := $(root_dir)/node_modules/.bin/eslint
 clang_tidy := /usr/local/opt/llvm/bin/clang-tidy
 headers := $(shell find $(root_dir) -name "*.hpp")
+node_version = $(shell node -v | cut -c 2-)
 
 node_modules:
 	@npm install
@@ -15,7 +16,11 @@ testrun: node_modules
 
 lint: node_modules
 	@$(eslint) $(root_dir)/lib/*.js; \
-	$(clang_tidy) $(headers) -- -I include -std=c++11
+	$(clang_tidy) $(headers) -- \
+			-I include \
+			-I $(HOME)/.node-gyp/$(node_version)/include/node \
+			-I $(root_dir)/node_modules/nan \
+			-std=c++11
 
 test: testrun lint
 
