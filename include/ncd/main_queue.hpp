@@ -82,14 +82,6 @@ public:  // constructors & destructor
   }
 
 public:  // API
-# if 0
-  template <typename Callback>
-  void
-  dispatch(Callback && callback) {
-    push(callback);
-  }
-# endif
-
   template <typename Callback>
   void
   push(Callback && callback) {

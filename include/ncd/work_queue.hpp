@@ -107,6 +107,7 @@ private:  // data members
 template <typename Sig, typename ReturnPolicy>
 struct WorkResultHandler;
 
+// void work()
 template <typename ReturnPolicy>
 struct WorkResultHandler<void(), ReturnPolicy> {
   using CallbackSig = void();
@@ -120,6 +121,7 @@ struct WorkResultHandler<void(), ReturnPolicy> {
   invokeDone(CB & done) { done(); }
 };
 
+// error_ptr work()
 template <typename ReturnPolicy>
 struct WorkResultHandler<typename ReturnPolicy::ErrorType*(), ReturnPolicy> {
   using CallbackSig = void(typename ReturnPolicy::ErrorType*);
@@ -135,6 +137,7 @@ struct WorkResultHandler<typename ReturnPolicy::ErrorType*(), ReturnPolicy> {
   typename ReturnPolicy::ErrorType* mError;
 };
 
+// void work(error_ptr**)
 template <typename ReturnPolicy>
 struct WorkResultHandler<void(typename ReturnPolicy::ErrorType**), ReturnPolicy> {
   using CallbackSig = void(typename ReturnPolicy::ErrorType*);
@@ -152,6 +155,7 @@ struct WorkResultHandler<void(typename ReturnPolicy::ErrorType**), ReturnPolicy>
   typename ReturnPolicy::ErrorType* mError;
 };
 
+// result work(error_ptr**)
 template <typename R, typename ReturnPolicy>
 struct WorkResultHandler<R(), ReturnPolicy> {
   using CallbackSig = void(R const&);
@@ -248,20 +252,6 @@ public:  // constructors & destructor
 # ifdef NCD_TRACE_WORK_QUEUE
   ~WorkQueue() { 
     NCD_DBWQ("WorkQueue::~WorkQueue()");
-  }
-# endif
-
-# if 0
-  template <typename Work, typename Callback>
-  void
-  dispatch(Work && work, Callback && done) {
-    push(work, done);
-  }
-
-  template <typename Work>
-  void
-  dispatch(Work && work, v8::Local<v8::Function> done) {
-    push(work, done);
   }
 # endif
 

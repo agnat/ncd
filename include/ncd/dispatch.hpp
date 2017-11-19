@@ -17,14 +17,6 @@ dispatch(WorkQueue & queue, Work && work, Callback && callback) {
   queue.push(std::forward<Work>(work), std::forward<Callback>(callback));
 }
 
-# if 0
-template <typename Work>
-void
-dispatch(WorkQueue & queue, Work && work, v8::Local<v8::Function> callback) {
-  queue.push(std::forward<Work>(work), callback);
-}
-# endif
-
 template <typename Callback>
 void
 dispatch(MainQueue & queue, Callback && callback) {
