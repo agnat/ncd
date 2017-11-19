@@ -5,7 +5,9 @@
   , {"target_name": "async_function_hpp",      "sources": ["async_function_hpp.cpp"]}
   , {"target_name": "async_handle_hpp",        "sources": ["async_handle_hpp.cpp"]}
   , {"target_name": "async_value_hpp",         "sources": ["async_value_hpp.cpp"]}
+  , {"target_name": "converters_hpp",          "sources": ["converters_hpp.cpp"]}
   , {"target_name": "default_work_queue_hpp",  "sources": ["default_work_queue_hpp.cpp"]}
+  , {"target_name": "dispatch_hpp",            "sources": ["dispatch_hpp.cpp"]}
   , {"target_name": "function_hpp",            "sources": ["function_hpp.cpp"]}
   , {"target_name": "js_class_hpp",            "sources": ["js_class_hpp.cpp"]}
   , {"target_name": "main_queue_hpp",          "sources": ["main_queue_hpp.cpp"]}

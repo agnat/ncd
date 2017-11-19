@@ -201,7 +201,7 @@ public:
   {}
 
   template <typename W>
-  WorkRequest(W && work, WorkQueue & owner, v8::Local<v8::Function> & done) 
+  WorkRequest(W && work, WorkQueue & owner, v8::Local<v8::Function> done) 
     : WorkRequestBase(owner), mWork(work), mDone(Function<DoneSignature>(done))
   {}
 
@@ -274,7 +274,11 @@ public:  // constructors & destructor
       typename detail::callable_signature<Work>::type,
       DefaultReturnPolicy
     >;
-    mPendingWork.emplace_back(make_unique<Request>(work, *this, done));
+    mPendingWork.emplace_back(
+        make_unique<Request>(
+          std::forward<Work>(work),
+          *this,
+          std::forward<Callback>(done)));
     scheduleWork();
   }
   
